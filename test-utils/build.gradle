@@ -18,14 +18,14 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 
 dependencies {
-    compile group:'org.hamcrest', name:'hamcrest-library', version:hamcrest_version
-    compile group:'junit', name:'junit', version:junit_version
-    compile group:'org.mongodb', name:'mongo-java-driver', version:mongodb_java_version
-    compile group:'commons-io', name:'commons-io', version:'2.4'
-    compile project(':client-lib')
+    implementation group:'org.hamcrest', name:'hamcrest-library', version:hamcrest_version
+    implementation group:'junit', name:'junit', version:junit_version
+    implementation group:'org.mongodb', name:'mongo-java-driver', version:mongodb_java_version
+    implementation group:'commons-io', name:'commons-io', version:'2.4'
+    implementation project(':client-lib')
 }
 
-findbugsMain {
+spotbugsMain {
     enabled = false
 }
 

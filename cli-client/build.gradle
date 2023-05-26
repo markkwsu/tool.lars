@@ -21,9 +21,9 @@ apply plugin: 'distribution'
 archivesBaseName = 'larsClient'
 
 dependencies {
-    compile group:'org.apache.aries', name:'org.apache.aries.util', version:aries_util_version
-    compile group:'org.osgi', name:'org.osgi.core', version:osgi_core_version
-    compile project(':upload-lib')
+    implementation group:'org.apache.aries', name:'org.apache.aries.util', version:aries_util_version
+    implementation group:'org.osgi', name:'org.osgi.core', version:osgi_core_version
+    implementation project(':upload-lib')
 
     testCompile group:'org.jmockit', name:'jmockit', version:jmockit_version
     testCompile group:'org.hamcrest', name:'hamcrest-library', version:hamcrest_version
@@ -35,7 +35,7 @@ dependencies {
 jar {
     manifest {
         attributes("Main-Class": "com.ibm.ws.lars.upload.cli.Main",
-                   "Class-Path": configurations.runtime.files.collect { file -> file.getName()}.join(' '))
+                   "Class-Path": configurations.runtimeClasspath.files.collect { file -> file.getName()}.join(' '))
     }
 }
 
@@ -54,11 +54,11 @@ testFat {
 
 distributions {
     main {
-        baseName = archivesBaseName
+        // baseName = archivesBaseName
         contents {
             into '/'
             into('bin/tools') {
-                from(configurations.runtime, configurations.runtime.artifacts.files)
+                from(configurations.runtimeClasspath, configurations.runtimeClasspath.artifacts.files)
             }
             into('bin') {
                 from('src/main/scripts')

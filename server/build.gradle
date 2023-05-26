@@ -78,9 +78,9 @@ sourceSets {
 }
 
 dependencies {
-    compile group:'com.fasterxml.jackson.core', name:'jackson-core', version:jackson_version
-    compile group:'com.fasterxml.jackson.core', name:'jackson-databind', version:jackson_version
-    compile group:'com.fasterxml.jackson.core', name:'jackson-annotations', version:jackson_version
+    implementation group:'com.fasterxml.jackson.core', name:'jackson-core', version:jackson_version
+    implementation group:'com.fasterxml.jackson.core', name:'jackson-databind', version:jackson_version
+    implementation group:'com.fasterxml.jackson.core', name:'jackson-annotations', version:jackson_version
 
     sharedLibs group:'org.mongodb', name:'mongo-java-driver', version:mongodb_java_version
     providedCompile fileTree(dir: "${libertyRoot}/dev/api/spec", include: requiredSpecJars)
@@ -97,7 +97,7 @@ dependencies {
     
     // The unit tests need some Liberty classes at runtime, but they should
     // not be compiling against these.
-    testRuntime fileTree(dir: "${libertyRoot}/lib", include: '*slf4*.jar')
+    testImplementation fileTree(dir: "${libertyRoot}/lib", include: '*slf4*.jar')
     
     antTasks group:'net.wasdev.wlp.ant', name:'wlp-anttasks', version:wlp_ant_tasks_version
 }
@@ -128,7 +128,7 @@ clean {
 
 task fatWar(type: War) {
     dependsOn fatDeployedClasses
-    baseName='larsServerFat'
+    archiveBaseName='larsServerFat'
     into ('WEB-INF/classes') {
         from sourceSets.fatDeployed.output
     }
@@ -144,7 +144,7 @@ testFat {
     finalizedBy 'stopBaseUrlServer'
 }
 
-task initAnt << {
+task initAnt {
     // Load the Liberty ant tasks
     ant.taskdef(resource: "net/wasdev/wlp/ant/antlib.xml",
                 classpath: configurations.antTasks.asPath)
@@ -171,7 +171,7 @@ CopySpec usrDirSpec(String serverName) {
 
 distributions {
     main {
-        baseName = archivesBaseName
+        // baseName = archivesBaseName
         contents {
             into '/'
             with usrDirSpec(serverName)

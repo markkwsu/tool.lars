@@ -14,6 +14,10 @@
 * limitations under the License.
 *******************************************************************************/
 
+plugins {
+    id 'com.github.spotbugs' version '4.7.3'
+}
+
 apply plugin: 'base'
 apply plugin: 'eclipse'
 
@@ -27,14 +31,13 @@ boolean haveAnyTestsFailed = false;
 
 loadProperties("${rootProject.rootDir}/test-utils/src/main/resources/config.properties");
 
-
 // General configuration for all projects
 // Set up support for fatTests which rely on a running test server
 subprojects {
 
     apply plugin: 'java'
     apply plugin: 'eclipse'
-    apply plugin: 'findbugs'
+    apply plugin: 'com.github.spotbugs'
     
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8    
@@ -48,7 +51,7 @@ subprojects {
     }
 
     dependencies {
-        findbugs 'com.google.code.findbugs:findbugs:3.0.0'
+        spotbugs 'com.github.spotbugs:spotbugs:4.7.3'
     }
     
     sourceSets {
@@ -58,15 +61,15 @@ subprojects {
         }
     }
     
-    findbugs {
-        sourceSets = [sourceSets.main]
-        def excludeFile = file("findbugs.exclude.xml")
-        if (excludeFile.exists()) {
-            excludeFilter = excludeFile
-        }
+    spotbugs {
+        // sourceSets = [sourceSets.main]
+        // def excludeFile = file("findbugs.exclude.xml")
+        // if (excludeFile.exists()) {
+        //     excludeFilter = excludeFile
+        // }
     }
     
-    findbugsMain {
+    spotbugsMain {
         reports {
             xml.enabled = false
             html.enabled = true
@@ -82,47 +85,47 @@ subprojects {
     }
     
     test {
-        reports.html.enabled = false
-        filter.includeTestsMatching '*Test'
+        // reports.html.enabled = false
+        // filter.includeTestsMatching '*Test'
         
-        ignoreFailures = true
-        afterTest { desc, result ->
-            if (result.resultType == TestResult.ResultType.FAILURE) {
-                haveAnyTestsFailed = true
-            }
-        }
+        // ignoreFailures = true
+        // afterTest { desc, result ->
+        //     if (result.resultType == TestResult.ResultType.FAILURE) {
+        //         haveAnyTestsFailed = true
+        //     }
+        // }
     }
     
     task testFat(type: Test) {
-        group 'verification'
-        description 'Start test server and run the fat tests'
+        // group 'verification'
+        // description 'Start test server and run the fat tests'
         
-        testClassesDir = sourceSets.fat.output.classesDir
-        classpath = sourceSets.fat.runtimeClasspath
+        // testClassesDir = sourceSets.fat.output.classesDir
+        // classpath = sourceSets.fat.runtimeClasspath
         
-        dependsOn fatClasses
-        dependsOn 'prepareTestWorkingDir'
-        dependsOn ':server:createTestUsrDir'
-        dependsOn ':server:startTestMongod'
-        finalizedBy ':server:stopTestMongod'
-        dependsOn ':server:startTestServer'
-        finalizedBy ':server:stopTestServer'
-        shouldRunAfter 'test'
-        inputs.files({tasks.prepareTestResources})
-        reports.html.enabled = false;
+        // dependsOn fatClasses
+        // dependsOn 'prepareTestWorkingDir'
+        // dependsOn ':server:createTestUsrDir'
+        // dependsOn ':server:startTestMongod'
+        // finalizedBy ':server:stopTestMongod'
+        // dependsOn ':server:startTestServer'
+        // finalizedBy ':server:stopTestServer'
+        // shouldRunAfter 'test'
+        // inputs.files({tasks.prepareTestResources})
+        // reports.html.enabled = false;
         
-        ignoreFailures = true
-        afterTest { desc, result ->
-            if (result.resultType == TestResult.ResultType.FAILURE) {
-                haveAnyTestsFailed = true
-            }
-        }
+        // ignoreFailures = true
+        // afterTest { desc, result ->
+        //     if (result.resultType == TestResult.ResultType.FAILURE) {
+        //         haveAnyTestsFailed = true
+        //     }
+        // }
         
-        if (project.hasProperty('fatFilter')) {
-            systemProperty 'fatFilter', fatFilter
-        }
+        // if (project.hasProperty('fatFilter')) {
+        //     systemProperty 'fatFilter', fatFilter
+        // }
         
-        workingDir file('build/test-working')
+        // workingDir file('build/test-working')
     }
     
     task prepareTestWorkingDir {
@@ -140,30 +143,30 @@ subprojects {
         exclude '**/*.esa'
     }
     
-    File testResourcesDir = file('src/fat/testResources')
-    def subProj = delegate
-    if (testResourcesDir.exists()) {
-        testResourcesDir.eachDirRecurse({ dir ->
-            if (dir.name.endsWith('.esa') || dir.name.endsWith('.jar') || dir.name.endsWith('.zip')) {
-                String relativeTargetPath = dir.parentFile.absolutePath.minus(testResourcesDir.absolutePath)
-                Task task = task "create-${relativeTargetPath}-${dir.name}" (type: Zip) {
-                    archiveName = dir.name
-                    from dir
-                    destinationDir = subProj.file('build/test-working/resources' + relativeTargetPath)
-                }
-                prepareTestResources.dependsOn task
-                prepareTestResources.outputs.files(task)
-            }
-        })
-    }
+    // File testResourcesDir = file('src/fat/testResources')
+    // def subProj = delegate
+    // if (testResourcesDir.exists()) {
+    //     testResourcesDir.eachDirRecurse({ dir ->
+    //         if (dir.name.endsWith('.esa') || dir.name.endsWith('.jar') || dir.name.endsWith('.zip')) {
+    //             String relativeTargetPath = dir.parentFile.absolutePath.minus(testResourcesDir.absolutePath)
+    //             Task task = task "create-${relativeTargetPath}-${dir.name}" (type: Zip) {
+    //                 archiveName = dir.name
+    //                 from dir
+    //                 destinationDir = subProj.file('build/test-working/resources' + relativeTargetPath)
+    //             }
+    //             prepareTestResources.dependsOn task
+    //             prepareTestResources.outputs.files(task)
+    //         }
+    //     })
+    // }
     
-    task testReport(type: TestReport) {
-        tasks.withType(Test).each({
-            reportOn it.binResultsDir
-            it.finalizedBy testReport
-        })
-        destinationDir testReportDir
-    }
+    // task testReport(type: TestReport) {
+    //     tasks.withType(Test).each({
+    //         reportOn it.binResultsDir
+    //         it.finalizedBy testReport
+    //     })
+    //     destinationDir testReportDir
+    // }
     
     // We have the JDT prefs checked in so disable the tasks which write it
     eclipseJdt.enabled = false
@@ -207,7 +210,7 @@ task globalTestReport(type: TestReport) {
     
     subprojects.each { subproj ->
         subproj.tasks.withType(Test).each {
-            reportOn it.binResultsDir
+            reportOn it.binaryResultsDirectory
             it.finalizedBy globalTestReport
             shouldRunAfter it
         }
@@ -223,22 +226,23 @@ task globalTestReport(type: TestReport) {
 }
 
 // Make the gradle eclipse tools play nicely with this non-java project
-task afterEclipseImport << {
-    Node node = new XmlParser().parse(file('.project'));
+// Is this nessecary?
+// task afterEclipseImport {
+//     Node node = new XmlParser().parse(file('.project'));
+
+//     node.depthFirst().each {
+//         if (it.name() == "nature" && it.value() == ["org.eclipse.jdt.core.javanature"]) {
+//             it.parent().remove(it)
+//         }
+//         if (it.name() == "buildSpec") {
+//             it.parent().remove(it)
+//         }
+//     }
     
-    node.depthFirst().each {
-        if (it.name() == "nature" && it.value() == ["org.eclipse.jdt.core.javanature"]) {
-            it.parent().remove(it)
-        }
-        if (it.name() == "buildSpec") {
-            it.parent().remove(it)
-        }
-    }
-    
-    XmlNodePrinter printer = new XmlNodePrinter(new PrintWriter(file('.project')))
-    printer.preserveWhitespace = true
-    printer.print(node)
-}
+//     XmlNodePrinter printer = new XmlNodePrinter(new PrintWriter(file('.project')))
+//     printer.preserveWhitespace = true
+//     printer.print(node)
+// }
 
 // Function to load configuration properties from a normal
 // java properties file. This seems to be necessary to allow

@@ -57,8 +57,8 @@ ext {
 
 // Create the zip repo for FileClientLicenseTest
 task createLicenseRepoZip (type:Zip) {
-    destinationDir = file('build/test-working/resources')
-    archiveName = 'licenseTestRepo.zip'
+    destinationDirectory = file('build/test-working/resources')
+    archiveFileName = 'licenseTestRepo.zip'
     from file('build/test-working/resources/licenseTestRepo')
     
     // This needs to be done after all the test resource archives have been created
