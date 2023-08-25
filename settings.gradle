@@ -1,1 +1,3 @@
 include 'cli-client','client-lib','client-lib-tests','upload-lib','server','test-utils'
+// include 'client-lib'
+// include 'client-lib','test-utils','upload-lib','cli-client'

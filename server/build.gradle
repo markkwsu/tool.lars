@@ -45,16 +45,20 @@ if (!hasProperty("mongodExecutable")) {
 }
 
 def requiredSpecJars = [
-    'com.ibm.*.javaee.jaxrs.1.1_*.jar',
-    'com.ibm.*.javaee.servlet.3.0_*.jar',
-    'com.ibm.*.javaee.cdi.1.0_*.jar',
-    'com.ibm.*.javaee.annotation.1.1_*.jar']
+    'com.ibm.websphere.javaee.jaxrs.2.0_*.jar',
+    'com.ibm.websphere.javaee.servlet.3.0_*.jar',
+    'com.ibm.websphere.javaee.cdi.1.2_*.jar',
+    'com.ibm.websphere.javaee.annotation.1.1_*.jar']
 
 def requiredIbmJars = [
-    'com.ibm.*.passwordUtil_*.jar',
+    // 這個檔案找不到，被一定到 liberty root 的 /lib 底下了，名稱也不太一樣
+    // 'com.ibm.*.passwordUtil_*.jar',
     'com.ibm.*.ssl_*.jar']
 
+def requiredIbmJarsInLib = ['com.ibm.*.passwordutil_*.jar']
+
 def requiredThirdPartyJars = [
+    // 這個檔案也找不到
     'com.ibm.websphere.appserver.thirdparty.jaxrs_*.jar']
 
 ext {
@@ -82,10 +86,25 @@ dependencies {
     implementation group:'com.fasterxml.jackson.core', name:'jackson-databind', version:jackson_version
     implementation group:'com.fasterxml.jackson.core', name:'jackson-annotations', version:jackson_version
 
+    // 20230604 Added by Mark Su
+    // 因為在執行 'gradle war' 會出錯，所以加上這行，但是 compile 還會有錯 
+    implementation group: 'org.apache.wink', name: 'wink-common', version: '1.4'
+
+    // 20230607 Added by Mark Su
+    // 20230608 Updated by Mark Su
+    // 暫時不做版本的調整，因為會牽動到程式碼裡面針對 mongodb 的連接
     sharedLibs group:'org.mongodb', name:'mongo-java-driver', version:mongodb_java_version
+    // sharedLibs group:'org.mongodb', name: 'mongodb-driver-core', version:mongodb_java_version
     providedCompile fileTree(dir: "${libertyRoot}/dev/api/spec", include: requiredSpecJars)
     providedCompile fileTree(dir: "${libertyRoot}/dev/api/ibm", include: requiredIbmJars)
+
+    // 20230604 Added by Mark Su
+    providedCompile fileTree(dir: "${libertyRoot}/lib", include: requiredIbmJarsInLib)
+
     providedCompile fileTree(dir: "${libertyRoot}/dev/api/third-party", include: requiredThirdPartyJars)
+
+    // 20230825 Added by Mark Su
+    // 這個值得研究
     providedCompile group:'com.google.code.findbugs', name:'annotations', version: '3.0.+'
 
     testCompile group:'junit', name:'junit', version:junit_version
@@ -94,12 +113,20 @@ dependencies {
     testCompile group:'org.apache.httpcomponents', name:'httpmime', version:httpmime_version
     testCompile group:'org.jmockit', name:'jmockit', version:jmockit_version
     testCompile project(':test-utils')
+
+    // 20230825 Added by Mark Su
+    testImplementation group:'org.jmockit', name:'jmockit', version:jmockit_version
+    testImplementation group:'junit', name:'junit', version:junit_version
+    testImplementation group:'org.hamcrest', name:'hamcrest-library', version:hamcrest_version
+    testCompile group:'org.jmockit', name:'jmockit', version:jmockit_version
+    // 20230825 End of add
     
     // The unit tests need some Liberty classes at runtime, but they should
     // not be compiling against these.
     testImplementation fileTree(dir: "${libertyRoot}/lib", include: '*slf4*.jar')
     
-    antTasks group:'net.wasdev.wlp.ant', name:'wlp-anttasks', version:wlp_ant_tasks_version
+    // antTasks group:'net.wasdev.wlp.ant', name:'wlp-anttasks', version:wlp_ant_tasks_version
+    antTasks group: 'io.openliberty.tools', name: 'liberty-ant-tasks', version: '1.9.12'
 }
 
 clean {

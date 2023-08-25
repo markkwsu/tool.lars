@@ -23,12 +23,24 @@ archivesBaseName = 'larsClient'
 dependencies {
     implementation group:'org.apache.aries', name:'org.apache.aries.util', version:aries_util_version
     implementation group:'org.osgi', name:'org.osgi.core', version:osgi_core_version
+    // 20230825 Added by Mark Su
+    implementation project(':client-lib')
+    testImplementation group:'org.jmockit', name:'jmockit', version:jmockit_version
+    testImplementation group:'org.hamcrest', name:'hamcrest-library', version:hamcrest_version
+    testImplementation group:'junit', name:'junit', version:junit_version
+    testImplementation project(':test-utils')
+    // 20230825 End of add
     implementation project(':upload-lib')
 
     testCompile group:'org.jmockit', name:'jmockit', version:jmockit_version
     testCompile group:'org.hamcrest', name:'hamcrest-library', version:hamcrest_version
     testCompile group:'junit', name:'junit', version:junit_version
+
+    // 20230607 Added by Mark Su
+    // 20230608 Updated by Mark Su
+    // 暫時不做版本的調整，因為會牽動到程式碼裡面針對 mongodb 的連接
     testCompile group:'org.mongodb', name:'mongo-java-driver', version:mongodb_java_version
+    // testCompile group:'org.mongodb', name: 'mongodb-driver-core', version:mongodb_java_version
     testCompile project(':test-utils')
 }
 

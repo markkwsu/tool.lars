@@ -19,6 +19,8 @@ apply plugin: 'eclipse'
 
 dependencies {
     implementation project(':client-lib')
+    implementation group:'org.apache.aries', name:'org.apache.aries.util', version:aries_util_version
+    implementation group:'org.osgi', name:'org.osgi.core', version:osgi_core_version
     testCompile group:'junit', name:'junit', version:junit_version
     testCompile project(':test-utils')
 }

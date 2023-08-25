@@ -20,20 +20,25 @@ apply plugin: 'eclipse'
 dependencies {
     implementation group:'org.hamcrest', name:'hamcrest-library', version:hamcrest_version
     implementation group:'junit', name:'junit', version:junit_version
+    // 20230607 Added by Mark Su
+    // 20230608 Updated by Mark Su
+    // 暫時不做版本的調整，因為會牽動到程式碼裡面針對 mongodb 的連接
     implementation group:'org.mongodb', name:'mongo-java-driver', version:mongodb_java_version
+    // implementation group:'org.mongodb', name: 'mongodb-driver-core', version:mongodb_java_version
     implementation group:'commons-io', name:'commons-io', version:'2.4'
     implementation project(':client-lib')
 }
 
-spotbugsMain {
-    enabled = false
-}
+// spotbugsMain {
+//     enabled = false
+// }
 
 rootProject.afterEvaluate {
     if (rootProject.hasProperty("java8BootClasspath")) {
         tasks.each {
             if (it instanceof JavaCompile) {
-                it.options.bootClasspath = rootProject.java8BootClasspath
+                // it.options.bootClasspath = rootProject.java8BootClasspath
+                it.options.bootstrapClasspath = files(rootProject.java8BootClasspath.split(":"))
             }
         }
         tasks.each {

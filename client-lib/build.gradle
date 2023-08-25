@@ -23,6 +23,8 @@ dependencies {
     implementation group:'org.osgi', name:'org.osgi.core', version:osgi_core_version
     implementation group:'javax.json', name:'javax.json-api', version:javax_json_version
     implementation group:'org.glassfish', name:'javax.json', version:glassfish_json_version
+    // 在執行 'gradle dist' 的時候會出現找不到 javax.xml.bind 的錯誤
+    implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.2.1'
 }
 
 task srcJar(type: Jar) {
@@ -35,7 +37,8 @@ rootProject.afterEvaluate {
     if (rootProject.hasProperty("java8BootClasspath")) {
         tasks.each {
             if (it instanceof JavaCompile) {
-                it.options.bootClasspath = rootProject.java8BootClasspath
+                // it.options.bootClasspath = rootProject.java8BootClasspath
+                it.options.bootstrapClasspath = files(rootProject.java8BootClasspath.split(":"))
             }
         }
         tasks.each {

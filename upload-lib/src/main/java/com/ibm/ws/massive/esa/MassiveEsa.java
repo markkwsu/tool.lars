@@ -426,8 +426,14 @@ public class MassiveEsa extends MassiveUploader implements RepositoryUploader<Es
 
         // build a set of capabilities of each of manifests in the bundles and the subsystem
         // manifest in the feature
-        try (final FileSystem zipSystem = FileSystems.newFileSystem(zipfile, null)) {
 
+        // 20230604 Updated by Mark Su
+        // Map<String, ?> env = java.util.Collections.emptyMap();
+        // try (final FileSystem zipSystem = FileSystems.newFileSystem(zipfile, env)) {
+        // 20230825 Updated by Mark Su
+        // Change back to use JDK8
+        try (final FileSystem zipSystem = FileSystems.newFileSystem(zipfile, null)) {
+        // 20230604 End of update
             // get the paths of each bundle jar in the root directory of the esa
             Iterable<Path> roots = zipSystem.getRootDirectories();
             BundleFinder finder = new BundleFinder(zipSystem);

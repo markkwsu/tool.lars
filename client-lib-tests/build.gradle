@@ -18,6 +18,17 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 
 dependencies {
+    // 20230825 Added by Mark Su
+    implementation project(':client-lib')
+    testImplementation group:'org.jmockit', name:'jmockit', version:jmockit_version
+    testImplementation group:'org.hamcrest', name:'hamcrest-library', version:hamcrest_version
+    testImplementation group:'junit', name:'junit', version:junit_version
+    // https://mvnrepository.com/artifact/javax.json/javax.json-api
+    testImplementation group: 'javax.json', name: 'javax.json-api', version: '1.1.4'
+    testImplementation project(':test-utils')
+    // https://mvnrepository.com/artifact/org.osgi/org.osgi.framework
+    testImplementation group: 'org.osgi', name: 'org.osgi.framework', version: '1.10.0'
+    // 20230825 End of add
     testCompile project(':client-lib')
     testCompile project(':test-utils')
     testCompile group:'org.jmockit', name:'jmockit', version:jmockit_version
@@ -37,7 +48,8 @@ rootProject.afterEvaluate {
     if (rootProject.hasProperty("java8BootClasspath")) {
         tasks.each {
             if (it instanceof JavaCompile) {
-                it.options.bootClasspath = rootProject.java8BootClasspath
+                // it.options.bootClasspath = rootProject.java8BootClasspath
+                it.options.bootstrapClasspath = files(rootProject.java8BootClasspath.split(":"))
             }
         }
         tasks.each {

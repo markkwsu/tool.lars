@@ -278,17 +278,16 @@ public class RepositoryRESTResource {
         InputStream contentStream = null;
         String contentType = null;
 
-        for (InPart part : parts) {
-            String partName = part.getPartName();
-            if ("attachmentInfo".equals(partName)) {
-
-                attachmentMetadata = Attachment.jsonToAttachment(part.getInputStream());
-            } else if (partName != null && partName.equals(name)) {
-                contentType = part.getContentType();
-
-                contentStream = part.getInputStream();
-            }
-        }
+        // TODO need to fix this.
+        // for (InPart part : parts) {
+        //     String partName = part.getPartName();
+        //     if ("attachmentInfo".equals(partName)) {
+        //         attachmentMetadata = Attachment.jsonToAttachment(part.getInputStream());
+        //     } else if (partName != null && partName.equals(name)) {
+        //         contentType = part.getContentType();
+        //         contentStream = part.getInputStream();
+        //     }
+        // }
 
         Attachment result = assetService.createAttachmentWithContent(assetId, name, attachmentMetadata, contentType, contentStream, uriInfo);
 

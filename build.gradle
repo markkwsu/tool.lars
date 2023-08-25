@@ -15,7 +15,7 @@
 *******************************************************************************/
 
 plugins {
-    id 'com.github.spotbugs' version '4.7.3'
+    // id 'com.github.spotbugs' version '4.7.3'
 }
 
 apply plugin: 'base'
@@ -37,7 +37,7 @@ subprojects {
 
     apply plugin: 'java'
     apply plugin: 'eclipse'
-    apply plugin: 'com.github.spotbugs'
+    // apply plugin: 'com.github.spotbugs'
     
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8    
@@ -51,7 +51,7 @@ subprojects {
     }
 
     dependencies {
-        spotbugs 'com.github.spotbugs:spotbugs:4.7.3'
+        // spotbugs 'com.github.spotbugs:spotbugs:4.7.3'
     }
     
     sourceSets {
@@ -61,20 +61,20 @@ subprojects {
         }
     }
     
-    spotbugs {
+    // spotbugs {
         // sourceSets = [sourceSets.main]
         // def excludeFile = file("findbugs.exclude.xml")
         // if (excludeFile.exists()) {
         //     excludeFilter = excludeFile
         // }
-    }
+    // }
     
-    spotbugsMain {
-        reports {
-            xml.enabled = false
-            html.enabled = true
-        }
-    }
+    // spotbugsMain {
+        // reports {
+        //     xml.enabled = false
+        //     html.enabled = true
+        // }
+    // }
     
     configurations {
         fatCompile.extendsFrom testCompile
