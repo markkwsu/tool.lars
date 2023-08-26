@@ -51,7 +51,7 @@ def requiredSpecJars = [
     'com.ibm.websphere.javaee.annotation.1.1_*.jar']
 
 def requiredIbmJars = [
-    // 這個檔案找不到，被一定到 liberty root 的 /lib 底下了，名稱也不太一樣
+    // 這個檔案找不到，被移動到 liberty root 的 /lib 底下了，名稱也不太一樣
     // 'com.ibm.*.passwordUtil_*.jar',
     'com.ibm.*.ssl_*.jar']
 
@@ -95,17 +95,23 @@ dependencies {
     // 暫時不做版本的調整，因為會牽動到程式碼裡面針對 mongodb 的連接
     sharedLibs group:'org.mongodb', name:'mongo-java-driver', version:mongodb_java_version
     // sharedLibs group:'org.mongodb', name: 'mongodb-driver-core', version:mongodb_java_version
-    providedCompile fileTree(dir: "${libertyRoot}/dev/api/spec", include: requiredSpecJars)
-    providedCompile fileTree(dir: "${libertyRoot}/dev/api/ibm", include: requiredIbmJars)
-
+    // 20230826 Updated by Mark Su
+    // providedCompile change to compileOnly
+    // providedCompile fileTree(dir: "${libertyRoot}/dev/api/spec", include: requiredSpecJars)
+    // providedCompile fileTree(dir: "${libertyRoot}/dev/api/ibm", include: requiredIbmJars)
+    compileOnly fileTree(dir: "${libertyRoot}/dev/api/spec", include: requiredSpecJars)
+    compileOnly fileTree(dir: "${libertyRoot}/dev/api/ibm", include: requiredIbmJars)
     // 20230604 Added by Mark Su
-    providedCompile fileTree(dir: "${libertyRoot}/lib", include: requiredIbmJarsInLib)
-
-    providedCompile fileTree(dir: "${libertyRoot}/dev/api/third-party", include: requiredThirdPartyJars)
-
+    // providedCompile fileTree(dir: "${libertyRoot}/lib", include: requiredIbmJarsInLib)
+    compileOnly fileTree(dir: "${libertyRoot}/lib", include: requiredIbmJarsInLib)
+    // 20230604 End of add
+    // providedCompile fileTree(dir: "${libertyRoot}/dev/api/third-party", include: requiredThirdPartyJars)
+    compileOnly fileTree(dir: "${libertyRoot}/dev/api/third-party", include: requiredThirdPartyJars)
     // 20230825 Added by Mark Su
     // 這個值得研究
-    providedCompile group:'com.google.code.findbugs', name:'annotations', version: '3.0.+'
+    // providedCompile group:'com.google.code.findbugs', name:'annotations', version: '3.0.+'
+    compileOnly group:'com.google.code.findbugs', name:'annotations', version: '3.0.+'
+    // 20230826 End of update
 
     testCompile group:'junit', name:'junit', version:junit_version
     testCompile group:'org.hamcrest', name:'hamcrest-library', version:hamcrest_version
@@ -183,7 +189,6 @@ CopySpec usrDirSpec(String serverName) {
         from(configurations.sharedLibs) {
             into 'shared/resources/libs'
         }
-        
         into("servers/${serverName}") {
             from(war) {
                 into 'apps'
